@@ -155,13 +155,42 @@
     if(Math.floor(elapsed/17)%tips.length>=0)ui.tip.textContent=tips[Math.floor(elapsed/17)%tips.length];
   }
   function drawBackground(){
-    ctx.clearRect(0,0,W,H);const g=ctx.createLinearGradient(0,0,W,H);g.addColorStop(0,"#091e31");g.addColorStop(.55,"#07192a");g.addColorStop(1,"#0a2235");ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
-    ctx.save();ctx.strokeStyle="#8ad8f0";ctx.globalAlpha=.055;ctx.lineWidth=1;
-    const gap=34;for(let x=0;x<W;x+=gap){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}for(let y=0;y<H;y+=gap){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}ctx.restore();
-    const rg=ctx.createRadialGradient(W*.5,H*.5,20,W*.5,H*.5,Math.max(W,H)*.7);rg.addColorStop(0,"#133b4a20");rg.addColorStop(1,"#020b17aa");ctx.fillStyle=rg;ctx.fillRect(0,0,W,H);
-    ctx.save();for(const f of snow){ctx.globalAlpha=f.a;ctx.fillStyle="#c6f3ff";ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,TAU);ctx.fill()}ctx.restore();
-    ctx.save();ctx.strokeStyle="#3c7894";ctx.globalAlpha=.35;ctx.lineWidth=1;const l=13,o=9;
-    [[o,o,1,1],[W-o,o,-1,1],[o,H-o,1,-1],[W-o,H-o,-1,-1]].forEach(([x,y,dx,dy])=>{ctx.beginPath();ctx.moveTo(x+dx*l,y);ctx.lineTo(x,y);ctx.lineTo(x,y+dy*l);ctx.stroke()});ctx.restore();
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle="#171a1b";ctx.fillRect(0,0,W,H);
+    const tile=Math.max(24,Math.round(Math.min(W,H)/12));
+    for(let row=0,y=0;y<H+tile;y+=tile,row++){
+      for(let col=0,x=0;x<W+tile;x+=tile,col++){
+        const shade=((row*7+col*11)%5);
+        const colors=["#626565","#585c5c","#686b6b","#505454","#5e6262"];
+        ctx.fillStyle=colors[shade];ctx.fillRect(x+1,y+1,tile-2,tile-2);
+        ctx.strokeStyle="#252929";ctx.lineWidth=1;ctx.strokeRect(x+1.5,y+1.5,tile-3,tile-3);
+        ctx.fillStyle="#ffffff0b";ctx.fillRect(x+3,y+3,tile-6,2);
+        ctx.fillStyle="#00000018";ctx.fillRect(x+3,y+tile-5,tile-6,2);
+      }
+    }
+    // Arena central elevada, inspirada no piso de pedra e no anel da referência do GDD.
+    const cx=W*.5,cy=H*.5,r=Math.min(W,H)*.235;
+    ctx.save();
+    ctx.fillStyle="#343839";ctx.strokeStyle="#242829";ctx.lineWidth=Math.max(5,tile*.22);
+    ctx.beginPath();ctx.arc(cx,cy,r+tile*.18,0,TAU);ctx.fill();ctx.stroke();
+    ctx.fillStyle="#777b7b";ctx.strokeStyle="#a0a3a3";ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(cx,cy,r,0,TAU);ctx.fill();ctx.stroke();
+    ctx.strokeStyle="#4c5151";ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,r*.86,0,TAU);ctx.stroke();
+    ctx.restore();
+    // Barreiras laterais de pedra, com aberturas para dar leitura de arena.
+    const bh=Math.max(42,H*.18),bw=Math.max(10,W*.035);
+    for(const side of [0,1]){
+      const x=side===0?2:W-bw-2;
+      for(const y of [H*.22-bh*.5,H*.78-bh*.5]){
+        ctx.fillStyle="#2d3233";ctx.fillRect(x-3,y-3,bw+6,bh+6);
+        ctx.fillStyle="#969a99";ctx.fillRect(x,y,bw,bh);
+        ctx.fillStyle="#c0c3c2";ctx.fillRect(x+2,y+3,Math.max(2,bw*.22),bh-6);
+        ctx.strokeStyle="#444949";ctx.lineWidth=2;ctx.strokeRect(x,y,bw,bh);
+        for(let k=1;k<4;k++){ctx.beginPath();ctx.moveTo(x,y+bh*k/4);ctx.lineTo(x+bw,y+bh*k/4);ctx.stroke()}
+      }
+    }
+    ctx.save();for(const f of snow){ctx.globalAlpha=f.a*.55;ctx.fillStyle="#f4f7f7";ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,TAU);ctx.fill()}ctx.restore();
+    ctx.strokeStyle="#d5d8d833";ctx.lineWidth=2;ctx.strokeRect(3,3,W-6,H-6);
   }
   function drawSaw(s){
     ctx.save();ctx.translate(s.x,s.y);ctx.rotate(s.angle);const r=s.r;
