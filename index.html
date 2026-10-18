@@ -14,6 +14,8 @@
 </head>
 <body>
   <main class="app-shell">
+    <section class="landing-screen" id="landing-screen" aria-label="Tela inicial"><div class="landing-glow"></div><div class="landing-content"><div class="landing-brand"><span>❄</span> FROSTBYTE</div><div class="landing-snowman" role="img" aria-label="Boneco de neve com cachecol amarelo"><svg viewBox="0 0 260 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs><radialGradient id="snowBody" cx="32%" cy="22%" r="78%"><stop offset="0" stop-color="#fff"/><stop offset=".62" stop-color="#dff5ff"/><stop offset="1" stop-color="#83b8d1"/></radialGradient><linearGradient id="scarf" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe66a"/><stop offset="1" stop-color="#ffb900"/></linearGradient></defs><ellipse cx="130" cy="276" rx="82" ry="13" fill="#f5d84c" opacity=".15"/><circle cx="130" cy="205" r="67" fill="url(#snowBody)" stroke="#b9e8f8" stroke-width="2"/><circle cx="130" cy="116" r="48" fill="url(#snowBody)" stroke="#b9e8f8" stroke-width="2"/><path d="M91 85 L96 47 Q130 29 164 47 L169 85 Z" fill="#152536" stroke="#3b5264" stroke-width="2"/><path d="M91 72 Q130 63 169 72 L169 83 Q130 91 91 83Z" fill="#ffcc22"/><circle cx="115" cy="112" r="4.6" fill="#152536"/><circle cx="145" cy="112" r="4.6" fill="#152536"/><path d="M128 120 L151 127 L128 132Z" fill="#ff9d32"/><path d="M118 140 Q130 150 142 140" fill="none" stroke="#41687b" stroke-width="3" stroke-linecap="round"/><path d="M88 154 Q130 171 172 154 L176 172 Q130 190 84 172Z" fill="url(#scarf)"/><path d="M151 167 L171 173 L165 216 L144 211Z" fill="#ffca1c" stroke="#e9ac00" stroke-width="1.5"/><circle cx="130" cy="201" r="4" fill="#527d90"/><circle cx="130" cy="224" r="4" fill="#527d90"/><path d="M72 187 L48 205 M188 187 L211 202" stroke="#8bb8cb" stroke-width="8" stroke-linecap="round"/><path d="M72 188 L49 205 M188 188 L211 202" stroke="#d9f3ff" stroke-width="4" stroke-linecap="round"/><circle cx="98" cy="131" r="6" fill="#f49d9d" opacity=".55"/><circle cx="162" cy="131" r="6" fill="#f49d9d" opacity=".55"/><g fill="#ffdf4d"><path d="M42 85l3 9 9 3-9 3-3 9-3-9-9-3 9-3z"/><path d="M206 121l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/><path d="M192 44l2 6 6 2-6 2-2 6-2-6-6-2 6-2z"/></g></svg></div><div class="landing-eyebrow">UM DESAFIO DE SOBREVIVÊNCIA</div><h1 class="landing-title">DISC SNOWMAN<span>.</span></h1><p class="landing-copy">Desvie das serras. Use o dash. Sobreviva ao frio.</p><button class="landing-start-button" id="landing-start-button"><span>COMEÇAR</span><b>↗</b></button><div class="landing-record">RECORDE PESSOAL <strong id="landing-best">00:00</strong></div></div><div class="landing-footer">FROSTBYTE LABS <span>·</span> SURVIVAL PROTOCOL</div></section>
+    <div class="game-screen is-hidden" id="game-screen">
     <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
     <header class="topbar">
       <a class="brand" href="#" aria-label="Disc Snowman início"><span class="brand-mark">❄</span><span>FROST<span class="brand-light">BYTE</span></span></a>
@@ -42,34 +44,25 @@
       <section class="arena-column" aria-label="Arena de jogo">
         <div class="arena-frame">
           <div class="arena-topline"><span><i class="live-dot"></i> LIVE FEED <b>·</b> SECTOR 09</span><span class="arena-coords">N 84°  E 21°</span></div>
-          <div class="arena-wrap">
-            <canvas id="game-canvas" aria-label="Arena de sobrevivência Disc Snowman"></canvas>
+          <div class="arena-stage">
+            <div class="side-control side-control-left"><div class="side-control-label">MOVIMENTO</div><div class="mobile-controls" id="mobile-controls"><div class="joystick" id="joystick" aria-label="Controle de movimento"><div class="joystick-ring"></div><div class="joystick-knob" id="joystick-knob"></div></div></div><div class="side-control-hint">ARRASTE<br>PARA MOVER</div></div>
+            <div class="arena-wrap">
+            <canvas id="game-canvas" aria-label="Arena quadrada de sobrevivência Disc Snowman"></canvas>
             <div class="scanlines"></div>
-            <div class="overlay" id="start-overlay">
-              <div class="overlay-content">
-                <div class="snowman-emblem"><span class="emblem-snow">✳</span><span class="emblem-face">● ●<br><b>⌣</b></span><span class="emblem-scarf"></span></div>
-                <div class="overlay-kicker">SINAL ESTÁVEL · JOGADOR DETECTADO</div>
-                <h2>SOBREVIVA<br>À TEMPESTADE<span>.</span></h2>
-                <p>As serras estão se aproximando.<br>Você sabe o que fazer.</p>
-                <button class="primary-button" id="start-button"><span>INICIAR SOBREVIVÊNCIA</span><b>↗</b></button>
-                <div class="overlay-bottom"><span>WASD / SETAS PARA MOVER</span><span>SPACE PARA DASH</span></div>
-              </div>
-            </div>
             <div class="overlay hidden" id="pause-overlay">
               <div class="overlay-content compact-overlay"><div class="overlay-kicker">SISTEMA SUSPENSO</div><h2>PAUSA<span>.</span></h2><p>Respire. O frio continua lá fora.</p><button class="primary-button" id="resume-button"><span>CONTINUAR</span><b>↗</b></button><button class="text-button" id="restart-pause-button">RECOMEÇAR PARTIDA</button></div>
             </div>
             <div class="overlay hidden" id="gameover-overlay">
               <div class="overlay-content compact-overlay"><div class="overlay-kicker danger-kicker">SINAL PERDIDO · FIM DE JOGO</div><h2>CONGELADO<span>.</span></h2><p>As serras venceram desta vez.<br>Uma nova tentativa?</p><div class="final-score"><span>TEMPO SOBREVIVIDO</span><strong id="final-time">00:00</strong><span>RECORDE <b id="final-best">00:00</b></span></div><button class="primary-button" id="retry-button"><span>TENTAR NOVAMENTE</span><b>↗</b></button></div>
             </div>
-            <div class="mobile-controls" id="mobile-controls">
-              <div class="joystick" id="joystick"><div class="joystick-ring"></div><div class="joystick-knob" id="joystick-knob"></div></div>
-              <button class="dash-button" id="dash-button"><span>✦</span><b>DASH</b></button>
             </div>
+            <div class="side-control side-control-right"><div class="side-control-label">HABILIDADE</div><button class="dash-button" id="dash-button" aria-label="Usar dash"><span>✦</span><b>DASH</b></button><div class="side-control-hint">TOQUE OU<br>PRESSIONE SPACE</div></div>
           </div>
           <div class="arena-bottomline"><span><span class="tiny-cross">+</span> MONITORAMENTO ATIVO</span><span id="arena-state">AGUARDANDO JOGADOR</span><span>FPS <b id="fps-counter">60</b></span></div>
         </div>
         <div class="hud-grid">
           <div class="hud-card time-card"><div class="hud-label"><span class="hud-icon">◷</span> TEMPO DE SOBREVIVÊNCIA</div><div class="hud-value" id="timer">00:00<span class="timer-ms">.00</span></div><div class="progress-track"><div class="progress-fill" id="time-progress"></div></div><div class="hud-foot"><span>PRÓXIMA FASE</span><span id="phase-label">FASE 01 / 06</span></div></div>
+          <div class="hud-card record-card"><div class="hud-label"><span class="hud-icon">★</span> RECORDE PESSOAL</div><div class="hud-value" id="best-time">00:00</div><div class="progress-track"><div class="progress-fill record-progress" id="record-progress"></div></div><div class="hud-foot"><span>MELHOR TEMPO</span><span>LOCAL</span></div></div>
           <div class="hud-card threat-card"><div class="hud-label"><span class="hud-icon threat-icon">⌁</span> NÍVEL DE AMEAÇA</div><div class="threat-value"><span id="threat-label">BAIXO</span><span class="threat-pips" id="threat-pips"><i class="active"></i><i></i><i></i><i></i><i></i></span></div><div class="threat-meter"><div id="threat-fill"></div></div><div class="hud-foot"><span>SERRAS ATIVAS</span><span id="saw-count">00</span></div></div>
           <div class="hud-card dash-card"><div class="hud-label"><span class="hud-icon">✧</span> DASH</div><div class="dash-status" id="dash-status">PRONTO<span class="dash-ready-dot"></span></div><div class="dash-track"><div id="dash-fill"></div></div><div class="hud-foot"><span>RECARGA</span><span id="dash-cooldown">100%</span></div></div>
         </div>
@@ -77,6 +70,7 @@
       </section>
     </section>
     <footer class="page-footer"><span>© 2026 FROSTBYTE LABS <span class="footer-divider">/</span> FEITO PARA OS QUE RESISTEM</span><span>BUILT IN THE DEEP FREEZE <span class="footer-snow">❄</span></span></footer>
+    </div>
   </main>
 </body>
 </html>
