@@ -4,18 +4,19 @@
   const ctx = canvas.getContext("2d");
   const $ = id => document.getElementById(id);
   const ui = {
-    start:$("start-overlay"), pause:$("pause-overlay"), over:$("gameover-overlay"),
-    startBtn:$("start-button"), resumeBtn:$("resume-button"), retryBtn:$("retry-button"),
+    landing:$("landing-screen"), landingStart:$("landing-start-button"), landingBest:$("landing-best"), gameScreen:$("game-screen"),
+    pause:$("pause-overlay"), over:$("gameover-overlay"),
+    resumeBtn:$("resume-button"), retryBtn:$("retry-button"),
     restartPause:$("restart-pause-button"), timer:$("timer"), progress:$("time-progress"),
     phase:$("phase-label"), threat:$("threat-label"), pips:$("threat-pips"),
     threatFill:$("threat-fill"), sawCount:$("saw-count"), dashStatus:$("dash-status"),
     dashFill:$("dash-fill"), dashCooldown:$("dash-cooldown"), arenaState:$("arena-state"),
-    finalTime:$("final-time"), finalBest:$("final-best"), fps:$("fps-counter"),
+    finalTime:$("final-time"), finalBest:$("final-best"), bestTime:$("best-time"), recordProgress:$("record-progress"), fps:$("fps-counter"),
     tip:$("tip-text"), sound:$("sound-toggle"), mobile:$("mobile-controls"),
     joystick:$("joystick"), knob:$("joystick-knob"), dashBtn:$("dash-button")
   };
   const TAU = Math.PI * 2;
-  const PHASE_LENGTH = 180;
+  const PHASE_LENGTH = 60;
   const tips = [
     "Não corra em linha reta. Use as bordas a seu favor.",
     "O dash atravessa o perigo por um instante — guarde-o para emergências.",
@@ -45,8 +46,18 @@
     for(let i=0;i<3;i++)spawnSaw("bounce",true);
     updateHUD();ui.arenaState.textContent="PROTOCOLO ATIVO";
   }
-  function start(){reset();gameState="playing";hideOverlays();last=performance.now();playTone(440,.07);requestAnimationFrame(loop)}
-  function hideOverlays(){ui.start.classList.add("hidden");ui.pause.classList.add("hidden");ui.over.classList.add("hidden")}
+  function start(){
+    ui.landing.classList.add("is-hidden");
+    ui.gameScreen.classList.remove("is-hidden");
+    fit();
+    reset();
+    gameState="playing";
+    hideOverlays();
+    last=performance.now();
+    playTone(440,.07);
+    requestAnimationFrame(loop);
+  }
+  function hideOverlays(){ui.pause.classList.add("hidden");ui.over.classList.add("hidden")}
   function pause(){if(gameState!=="playing")return;gameState="paused";ui.pause.classList.remove("hidden");ui.arenaState.textContent="PARTIDA PAUSADA"}
   function resume(){if(gameState!=="paused")return;gameState="playing";ui.pause.classList.add("hidden");last=performance.now();requestAnimationFrame(loop);ui.arenaState.textContent="PROTOCOLO ATIVO"}
   function endGame(){gameState="over";shake=12;burst(player.x,player.y,"#a9edff",35);playTone(125,.32);if(elapsed>best){best=elapsed;localStorage.setItem("discSnowmanBest",String(best))}ui.finalTime.textContent=fmt(elapsed);ui.finalBest.textContent=fmt(best);ui.over.classList.remove("hidden");ui.arenaState.textContent="SINAL PERDIDO"}
@@ -138,6 +149,9 @@
     [...ui.pips.children].forEach((el,i)=>el.classList.toggle("active",i<t));
     ui.threatFill.style.width=(t/5*100)+"%";ui.sawCount.textContent=String(saws.length).padStart(2,"0");
     if(player){const ready=player.cooldown<=0;ui.dashStatus.innerHTML=(ready?"PRONTO":"RECARREGANDO")+'<span class="dash-ready-dot" style="background:'+(ready?"#64e3c0":"#ffb06d")+'"></span>';ui.dashFill.style.width=((1-player.cooldown/1.65)*100)+"%";ui.dashCooldown.textContent=Math.round((1-player.cooldown/1.65)*100)+"%"}
+    ui.bestTime.textContent=fmt(best);
+    ui.landingBest.textContent=fmt(best);
+    ui.recordProgress.style.width=(best>0?Math.min(100,elapsed/best*100):0)+"%";
     if(Math.floor(elapsed/17)%tips.length>=0)ui.tip.textContent=tips[Math.floor(elapsed/17)%tips.length];
   }
   function drawBackground(){
@@ -200,9 +214,9 @@
   function joyEnd(){joy.active=false;joy.x=0;joy.y=0;joy.pointer=null;ui.knob.style.transform="translate(0,0)"}
   ui.joystick.addEventListener("pointerup",joyEnd);ui.joystick.addEventListener("pointercancel",joyEnd);
   ui.dashBtn.addEventListener("pointerdown",e=>{e.preventDefault();dash()});
-  ui.startBtn.addEventListener("click",start);ui.retryBtn.addEventListener("click",start);ui.restartPause.addEventListener("click",start);ui.resumeBtn.addEventListener("click",resume);
+  ui.landingStart.addEventListener("click",start);ui.retryBtn.addEventListener("click",start);ui.restartPause.addEventListener("click",start);ui.resumeBtn.addEventListener("click",resume);
   ui.sound.addEventListener("click",()=>{soundOn=!soundOn;ui.sound.classList.toggle("sound-muted",!soundOn);ui.sound.setAttribute("aria-label",soundOn?"Desativar sons":"Ativar sons");if(soundOn)playTone(520,.06)});
   window.addEventListener("keydown",keydown,{passive:false});window.addEventListener("keyup",keyup);window.addEventListener("blur",()=>{keys={};joyEnd();if(gameState==="playing")pause()});
   window.addEventListener("resize",fit);document.addEventListener("visibilitychange",()=>{if(document.hidden&&gameState==="playing")pause()});
-  fit();reset();render();ui.finalBest.textContent=fmt(best);ui.sound.classList.toggle("sound-muted",!soundOn);
+  fit();ui.finalBest.textContent=fmt(best);ui.bestTime.textContent=fmt(best);ui.landingBest.textContent=fmt(best);ui.sound.classList.toggle("sound-muted",!soundOn);render();
 })();
