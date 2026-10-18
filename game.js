@@ -204,5 +204,5 @@
   ui.sound.addEventListener("click",()=>{soundOn=!soundOn;ui.sound.classList.toggle("sound-muted",!soundOn);ui.sound.setAttribute("aria-label",soundOn?"Desativar sons":"Ativar sons");if(soundOn)playTone(520,.06)});
   window.addEventListener("keydown",keydown,{passive:false});window.addEventListener("keyup",keyup);window.addEventListener("blur",()=>{keys={};joyEnd();if(gameState==="playing")pause()});
   window.addEventListener("resize",fit);document.addEventListener("visibilitychange",()=>{if(document.hidden&&gameState==="playing")pause()});
-  fit();reset();ui.finalBest.textContent=fmt(best);ui.sound.classList.toggle("sound-muted",!soundOn);
+  fit();reset();render();ui.finalBest.textContent=fmt(best);ui.sound.classList.toggle("sound-muted",!soundOn);
 })();
