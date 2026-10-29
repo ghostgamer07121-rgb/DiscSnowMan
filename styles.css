@@ -149,56 +149,56 @@ body{overflow-x:hidden}
 }
 
 
-/* Controles ampliados e indicador animado de recarga do dash */
+/* Controles: joystick 2x, botão dash 1,5x e recarga visual clara */
+.game-screen .joystick{
+  width:176px !important;
+  height:176px !important;
+  max-width:none !important;
+  max-height:none !important;
+}
 .game-screen .joystick-knob{
-  width:72%;
-  height:72%;
-  margin:-36% 0 0 -36%;
+  width:72% !important;
+  height:72% !important;
+  margin:-36% 0 0 -36% !important;
   transition:background .15s ease,box-shadow .15s ease;
 }
 .game-screen .dash-button{
+  width:132px !important;
+  height:132px !important;
+  flex:0 0 132px !important;
+  box-sizing:border-box;
   position:relative;
   isolation:isolate;
-  width:clamp(93px,12vw,132px);
-  height:clamp(93px,12vw,132px);
-  flex-shrink:0;
-  background:#25230f;
-  transition:transform .15s ease,background .2s ease,box-shadow .2s ease;
+  border:4px solid transparent;
+  background:
+    linear-gradient(#25230f,#25230f) padding-box,
+    conic-gradient(#ffdc28 var(--dash-progress,100%),#49451f 0) border-box !important;
+  color:#ffdf35;
+  transition:transform .15s ease,filter .2s ease;
+  box-shadow:0 0 22px #ffdc2820;
 }
-.game-screen .dash-button::before{
-  content:"";
-  position:absolute;
-  z-index:-1;
-  inset:-5px;
-  border-radius:50%;
-  background:conic-gradient(#ffdc28 var(--dash-progress,100%),#49451f 0);
-  -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));
-  mask:radial-gradient(farthest-side,transparent calc(100% - 3px),#000 calc(100% - 2px));
-}
+.game-screen .dash-button span,
+.game-screen .dash-button b{position:relative;z-index:1}
 .game-screen .dash-button.is-recharging{
-  color:#d2c77a;
-  box-shadow:0 0 18px #ffdc2810;
-  animation:dash-recharge-pulse 1.1s ease-in-out infinite;
-}
-.game-screen .dash-button.is-recharging::before{
-  animation:dash-ring-glow 1.1s ease-in-out infinite;
+  color:#f4df70;
+  animation:dash-recharge-pulse .65s ease-in-out infinite;
 }
 .game-screen .dash-button:not(.is-recharging){
-  box-shadow:0 0 25px #ffdc2830;
+  filter:drop-shadow(0 0 8px #ffdc2860);
 }
 .game-screen .dash-button:active{transform:scale(.96)}
 @keyframes dash-recharge-pulse{
-  0%,100%{filter:brightness(.82)}
-  50%{filter:brightness(1.18)}
-}
-@keyframes dash-ring-glow{
-  0%,100%{filter:drop-shadow(0 0 1px #ffdc2840)}
-  50%{filter:drop-shadow(0 0 7px #ffdc28aa)}
+  0%,100%{filter:brightness(.78) drop-shadow(0 0 1px #ffdc2820)}
+  50%{filter:brightness(1.45) drop-shadow(0 0 10px #ffdc28b0)}
 }
 @media(max-width:680px){
-  .game-screen .dash-button{width:96px;height:96px}
+  .game-screen .joystick{width:128px !important;height:128px !important}
+  .game-screen .dash-button{width:96px !important;height:96px !important;flex-basis:96px !important}
+}
+@media(max-width:380px){
+  .game-screen .joystick{width:112px !important;height:112px !important}
+  .game-screen .dash-button{width:88px !important;height:88px !important;flex-basis:88px !important}
 }
 @media(prefers-reduced-motion:reduce){
-  .game-screen .dash-button.is-recharging,
-  .game-screen .dash-button.is-recharging::before{animation:none!important}
+  .game-screen .dash-button.is-recharging{animation:none!important}
 }
