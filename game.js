@@ -148,7 +148,7 @@
     ui.threat.textContent=labels[t-1];ui.threat.style.color=t>=4?"#ff7888":t>=3?"#ffb176":"#dcefff";
     [...ui.pips.children].forEach((el,i)=>el.classList.toggle("active",i<t));
     ui.threatFill.style.width=(t/5*100)+"%";ui.sawCount.textContent=String(saws.length).padStart(2,"0");
-    if(player){const ready=player.cooldown<=0;ui.dashStatus.innerHTML=(ready?"PRONTO":"RECARREGANDO")+'<span class="dash-ready-dot" style="background:'+(ready?"#64e3c0":"#ffb06d")+'"></span>';ui.dashFill.style.width=((1-player.cooldown/1.65)*100)+"%";ui.dashCooldown.textContent=Math.round((1-player.cooldown/1.65)*100)+"%"}
+    if(player){const ready=player.cooldown<=0;const dashProgress=clamp(1-player.cooldown/1.65,0,1);ui.dashStatus.innerHTML=(ready?"PRONTO":"RECARREGANDO")+'<span class="dash-ready-dot" style="background:'+(ready?"#64e3c0":"#ffb06d")+'"></span>';ui.dashFill.style.width=(dashProgress*100)+"%";ui.dashCooldown.textContent=Math.round(dashProgress*100)+"%";ui.dashBtn.style.setProperty("--dash-progress",(dashProgress*100)+"%");ui.dashBtn.classList.toggle("is-recharging",!ready);ui.dashBtn.setAttribute("aria-label",ready?"Usar dash":"Dash recarregando: "+Math.round(dashProgress*100)+"%")}
     ui.bestTime.textContent=fmt(best);
     ui.landingBest.textContent=fmt(best);
     ui.recordProgress.style.width=(best>0?Math.min(100,elapsed/best*100):0)+"%";
