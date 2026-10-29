@@ -232,10 +232,18 @@
   }
   function keyup(e){keys[e.code]=false}
   function joyPoint(e){
-    const r=ui.joystick.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
-    let dx=e.clientX-cx,dy=e.clientY-cy,limit=r.width*.34,len=Math.hypot(dx,dy);
+    // Use the visual ring's actual screen rectangle as the hitbox reference.
+    // Pointer coordinates and knob displacement now share the same center.
+    const ring=ui.joystick.querySelector(".joystick-ring");
+    const r=(ring||ui.joystick).getBoundingClientRect();
+    const cx=r.left+r.width/2, cy=r.top+r.height/2;
+    let dx=e.clientX-cx, dy=e.clientY-cy;
+    const knob=ui.knob.getBoundingClientRect();
+    const knobRadius=Math.min(knob.width,knob.height)/2;
+    const limit=Math.max(1,Math.min(r.width,r.height)/2-knobRadius-3);
+    const len=Math.hypot(dx,dy);
     if(len>limit){dx=dx/len*limit;dy=dy/len*limit}
-    joy.x=dx/limit;joy.y=dy/limit;
+    joy.x=dx/limit; joy.y=dy/limit;
     ui.knob.style.transform="translate("+dx+"px,"+dy+"px)";
   }
   ui.joystick.addEventListener("pointerdown",e=>{e.preventDefault();joy.active=true;joy.pointer=e.pointerId;ui.joystick.setPointerCapture(e.pointerId);joyPoint(e)});
