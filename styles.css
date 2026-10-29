@@ -268,3 +268,35 @@ body{overflow-x:hidden}
   0%,100% {filter:brightness(.82);box-shadow:0 0 12px #ffdc2825 !important}
   50% {filter:brightness(1.6);box-shadow:0 0 28px #ffdc28a8 !important}
 }
+
+
+/* Joystick hitbox alignment: same geometry for visible ring and pointer target */
+@media (max-width:680px) {
+  .game-screen .side-control-left,
+  .game-screen .mobile-controls {
+    width:100% !important;
+    min-width:0 !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    overflow:visible !important;
+  }
+  .game-screen .joystick {
+    position:relative !important;
+    left:auto !important;top:auto !important;right:auto !important;bottom:auto !important;
+    transform:none !important;
+    margin:0 auto !important;
+    touch-action:none !important;
+  }
+  .game-screen .joystick-ring {
+    position:absolute !important;
+    inset:0 !important;
+    box-sizing:border-box !important;
+    pointer-events:none !important;
+  }
+  .game-screen .joystick-knob {
+    left:50% !important;top:50% !important;
+    transform:translate(0,0) !important;
+    pointer-events:none !important;
+  }
+}
