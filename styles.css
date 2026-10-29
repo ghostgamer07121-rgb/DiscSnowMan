@@ -202,3 +202,69 @@ body{overflow-x:hidden}
 @media(prefers-reduced-motion:reduce){
   .game-screen .dash-button.is-recharging{animation:none!important}
 }
+
+
+/* MOBILE FIX v2: controles grandes, centrados e animacao visivel em celulares */
+@media (max-width:680px) {
+  .game-screen .arena-stage {
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;
+    grid-template-rows:auto auto !important;
+    align-items:center !important;
+    column-gap:18px !important;
+    row-gap:14px !important;
+  }
+  .game-screen .arena-wrap {
+    grid-column:1 / -1 !important;
+    grid-row:1 !important;
+    width:min(calc(100vw - 28px), calc(100svh - 250px)) !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    aspect-ratio:1 / 1 !important;
+  }
+  .game-screen .side-control {
+    grid-row:2 !important;
+    min-height:122px !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+    overflow:visible !important;
+  }
+  .game-screen .side-control-left {grid-column:1 !important;justify-content:center !important;padding:0 !important}
+  .game-screen .side-control-right {grid-column:2 !important;justify-content:center !important;padding:0 !important}
+  .game-screen .mobile-controls {display:block !important;position:static !important;width:auto !important;height:auto !important;overflow:visible !important}
+  .game-screen .joystick {
+    position:relative !important;left:auto !important;bottom:auto !important;
+    display:block !important;width:116px !important;height:116px !important;
+    min-width:116px !important;min-height:116px !important;max-width:none !important;
+    margin:0 !important;flex:0 0 116px !important;overflow:visible !important;
+  }
+  .game-screen .joystick-ring {inset:0 !important;border:2px solid #b9efff99 !important;background:radial-gradient(circle,#315a6c99,#0d2537cc) !important;box-shadow:0 0 22px #55dfff24,inset 0 0 22px #7beaff20 !important}
+  .game-screen .joystick-knob {
+    position:absolute !important;left:50% !important;top:50% !important;
+    width:54px !important;height:54px !important;margin:-27px 0 0 -27px !important;
+    border:2px solid #dcf8ff !important;background:radial-gradient(circle at 35% 28%,#9beaff,#28718e 72%) !important;
+    box-shadow:0 0 20px #69dfff65 !important;
+  }
+  .game-screen .dash-button {
+    position:relative !important;right:auto !important;bottom:auto !important;
+    width:100px !important;height:100px !important;min-width:100px !important;min-height:100px !important;
+    flex:0 0 100px !important;padding:0 !important;border:5px solid transparent !important;
+    border-radius:50% !important;
+    background:linear-gradient(#27230b,#27230b) padding-box,conic-gradient(#ffdf28 var(--dash-progress,100%),#5c5528 0) border-box !important;
+    box-shadow:0 0 25px #ffdc2830 !important;isolation:isolate !important;
+  }
+  .game-screen .dash-button span {font-size:30px !important}
+  .game-screen .dash-button b {font-size:11px !important;letter-spacing:1px !important}
+  .game-screen .dash-button.is-recharging {animation:mobile-dash-pulse .7s ease-in-out infinite !important}
+}
+@media (max-width:380px) {
+  .game-screen .arena-wrap {width:min(calc(100vw - 24px), calc(100svh - 230px)) !important}
+  .game-screen .joystick {width:104px !important;height:104px !important;min-width:104px !important;min-height:104px !important;flex-basis:104px !important}
+  .game-screen .joystick-knob {width:48px !important;height:48px !important;margin:-24px 0 0 -24px !important}
+  .game-screen .dash-button {width:88px !important;height:88px !important;min-width:88px !important;min-height:88px !important;flex-basis:88px !important}
+  .game-screen .side-control {min-height:110px !important}
+}
+@keyframes mobile-dash-pulse {
+  0%,100% {filter:brightness(.82);box-shadow:0 0 12px #ffdc2825 !important}
+  50% {filter:brightness(1.6);box-shadow:0 0 28px #ffdc28a8 !important}
+}
