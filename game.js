@@ -84,6 +84,7 @@
     updateHUD();ui.arenaState.textContent="PROTOCOLO ATIVO";
   }
   function start(){
+    scoreSubmitted=false;
     ui.landing.classList.add("is-hidden");
     ui.gameScreen.classList.remove("is-hidden");
     fit();
@@ -290,7 +291,7 @@
   ui.dashBtn.addEventListener("pointerdown",e=>{e.preventDefault();dash()});
   ui.usernameContinue.addEventListener("click",()=>{
     const name=ui.usernameInput.value.trim();
-    if(!/^[\\p{L}\\p{N}_ -]{2,16}$/u.test(name)){ui.usernameError.textContent="Use de 2 a 16 caracteres (letras, números, espaço, _ ou -).";return}
+    if(!/^[A-Za-zÀ-ÿ0-9_ -]{2,16}$/.test(name)){ui.usernameError.textContent="Use de 2 a 16 caracteres (letras, números, espaço, _ ou -).";return}
     currentUsername=name;localStorage.setItem("discSnowmanUsername",name);
     ui.usernameScreen.classList.add("is-hidden");ui.landing.classList.remove("is-hidden");loadLeaderboard();
   });
