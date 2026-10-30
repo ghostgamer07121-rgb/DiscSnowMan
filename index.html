@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=mobile-controls-v3">
+  <link rel="stylesheet" href="./styles.css?v=leaderboard-v1">
   <script src="./game.js" defer></script>
 </head>
 <body>
@@ -38,7 +38,7 @@
               <div class="overlay-content compact-overlay"><h2>PAUSADO</h2><button class="primary-button" id="resume-button">CONTINUAR</button><button class="text-button" id="restart-pause-button">RECOMEÇAR</button></div>
             </div>
             <div class="overlay hidden" id="gameover-overlay">
-              <div class="overlay-content compact-overlay"><h2>FIM DE JOGO</h2><p>Tempo: <strong id="final-time">00:00</strong></p><p>Recorde: <strong id="final-best">00:00</strong></p><button class="primary-button" id="retry-button">TENTAR NOVAMENTE</button></div>
+              <div class="overlay-content compact-overlay"><h2>FIM DE JOGO</h2><p>Tempo: <strong id="final-time">00:00</strong></p><p>Recorde: <strong id="final-best">00:00</strong></p><p class="score-submit-status" id="score-submit-status" aria-live="polite">Enviando pontuação...</p><button class="primary-button" id="retry-button">TENTAR NOVAMENTE</button></div>
             </div>
           </div>
           <div class="side-control side-control-right"><button class="dash-button" id="dash-button" aria-label="Usar dash"><span>✦</span><b>DASH</b></button></div>
