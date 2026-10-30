@@ -300,3 +300,51 @@ body{overflow-x:hidden}
     pointer-events:none !important;
   }
 }
+
+
+/* Player name gate and shared global leaderboard */
+.username-screen{
+  position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:15px;padding:24px;
+  background:#000;color:#f5f5f5;text-align:center;
+}
+.username-screen.is-hidden{display:none!important}
+.username-screen .landing-snowman{width:min(42vw,210px);margin:0 auto 8px;filter:drop-shadow(0 0 22px #8deaff18)}
+.username-screen .landing-snowman svg{display:block;width:100%;height:auto}
+.username-screen label{font:700 11px "DM Mono",monospace;letter-spacing:2px;color:#f2d33c}
+.username-screen input{
+  width:min(300px,82vw);height:52px;padding:0 16px;border:1px solid #45494b;
+  border-radius:5px;background:#111416;color:#fff;text-align:center;
+  font:500 16px Outfit,system-ui,sans-serif;outline:none;
+}
+.username-screen input:focus{border-color:#ffdc28;box-shadow:0 0 0 3px #ffdc2820}
+.username-screen input::placeholder{color:#777}
+.username-error{min-height:15px;margin:0;color:#ff8e8e;font:10px "DM Mono",monospace}
+.username-screen .landing-start-button{justify-content:center}
+.landing-screen{overflow-y:auto;justify-content:center;gap:13px;padding:18px 18px 24px}
+.landing-screen .landing-snowman{width:clamp(145px,20vh,205px);margin:0 auto}
+.landing-screen .landing-start-button{flex:0 0 auto}
+.landing-screen .landing-record{margin:0}
+.leaderboard-panel{
+  width:min(100%,390px);max-height:250px;overflow:auto;margin:2px auto 0;
+  padding:13px 15px 12px;border:1px solid #282d30;border-radius:7px;
+  background:linear-gradient(145deg,#101416,#080a0b);text-align:left;
+}
+.leaderboard-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.leaderboard-heading span{font:700 10px "DM Mono",monospace;letter-spacing:1.5px;color:#f1d33b}
+.leaderboard-heading small,.leaderboard-status{font:9px "DM Mono",monospace;color:#777}
+.leaderboard-status{margin-bottom:7px}
+.leaderboard-table{width:100%;border-collapse:collapse;font:10px "DM Mono",monospace}
+.leaderboard-table th{padding:6px 4px;color:#727b80;text-align:left;font-size:8px;font-weight:500;letter-spacing:1px;border-bottom:1px solid #303638}
+.leaderboard-table td{padding:7px 4px;color:#d8e0e3;border-bottom:1px solid #1c2225}
+.leaderboard-table tr:last-child td{border-bottom:0}
+.leaderboard-table td:first-child{width:34px;color:#f2d33c}
+.leaderboard-table td:last-child,.leaderboard-table th:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.leaderboard-table td:nth-child(2){max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.score-submit-status{min-height:14px;color:#e8d35e;font:9px "DM Mono",monospace}
+@media(max-width:680px){
+  .landing-screen{gap:10px;padding:14px 14px 18px}
+  .landing-screen .landing-snowman{width:clamp(120px,18vh,160px)}
+  .leaderboard-panel{max-height:210px;padding:10px 12px}
+  .leaderboard-table td{padding:6px 4px}
+}
