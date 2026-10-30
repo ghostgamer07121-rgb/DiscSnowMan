@@ -296,7 +296,7 @@ body{overflow-x:hidden}
   }
   .game-screen .joystick-knob {
     left:50% !important;top:50% !important;
-    transform:translate(0,0) !important;
+    transform:translate(0,0);
     pointer-events:none !important;
   }
 }
