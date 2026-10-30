@@ -4,7 +4,9 @@
   const ctx = canvas.getContext("2d");
   const $ = id => document.getElementById(id);
   const ui = {
+    usernameScreen:$("username-screen"), usernameInput:$("username-input"), usernameContinue:$("username-continue"), usernameError:$("username-error"),
     landing:$("landing-screen"), landingStart:$("landing-start-button"), landingBest:$("landing-best"), gameScreen:$("game-screen"),
+    leaderboardBody:$("leaderboard-body"), leaderboardStatus:$("leaderboard-status"), scoreSubmitStatus:$("score-submit-status"),
     pause:$("pause-overlay"), over:$("gameover-overlay"),
     resumeBtn:$("resume-button"), retryBtn:$("retry-button"),
     restartPause:$("restart-pause-button"), timer:$("timer"), progress:$("time-progress"),
@@ -27,6 +29,41 @@
   let W=900,H=680,dpr=1,last=0,elapsed=0,gameState="menu",saws=[],particles=[],snow=[],keys={},soundOn=true;
   let player,spawnClock=0,shake=0,frameCount=0,fpsClock=0,best=Number(localStorage.getItem("discSnowmanBest")||0);
   let joy={x:0,y:0,active:false,pointer:null},audioCtx=null;
+  const LEADERBOARD_URL="https://pgxwxvimpwjqqhzojfps.supabase.co/functions/v1/leaderboard";
+  let currentUsername=localStorage.getItem("discSnowmanUsername")||"",scoreSubmitted=false;
+  const fmtScore=ms=>fmt(ms/1000);
+  function renderLeaderboard(scores){
+    if(!ui.leaderboardBody)return;
+    ui.leaderboardBody.innerHTML="";
+    if(!scores||!scores.length){ui.leaderboardBody.innerHTML='<tr><td colspan="3">Ainda não há pontuações.</td></tr>';return}
+    scores.forEach((entry,index)=>{
+      const tr=document.createElement("tr");
+      const rank=document.createElement("td");rank.textContent=String(index+1).padStart(2,"0");
+      const name=document.createElement("td");name.textContent=entry.username;
+      const time=document.createElement("td");time.textContent=fmtScore(entry.score_ms);
+      tr.append(rank,name,time);ui.leaderboardBody.appendChild(tr);
+    });
+  }
+  async function loadLeaderboard(){
+    try{
+      const response=await fetch(LEADERBOARD_URL,{headers:{"apikey":"sb_publishable_rLPMApQamOOGr32XNRfQEQ_Ap5qMViq"}});
+      if(!response.ok)throw new Error("request failed");
+      const data=await response.json();renderLeaderboard(data.scores);
+      ui.leaderboardStatus.textContent="Atualizado ao vivo";
+    }catch(e){ui.leaderboardStatus.textContent="Ranking indisponível no momento."}
+  }
+  async function submitScore(){
+    if(scoreSubmitted||!currentUsername)return;
+    scoreSubmitted=true;
+    if(ui.scoreSubmitStatus)ui.scoreSubmitStatus.textContent="Enviando pontuação...";
+    try{
+      const response=await fetch(LEADERBOARD_URL,{method:"POST",headers:{"Content-Type":"application/json","apikey":"sb_publishable_rLPMApQamOOGr32XNRfQEQ_Ap5qMViq"},body:JSON.stringify({username:currentUsername,score_ms:Math.round(elapsed*1000)})});
+      const data=await response.json();
+      if(!response.ok)throw new Error(data.error||"Falha ao enviar");
+      renderLeaderboard(data.scores);ui.leaderboardStatus.textContent="Atualizado ao vivo";
+      if(ui.scoreSubmitStatus)ui.scoreSubmitStatus.textContent="Pontuação registrada no ranking!";
+    }catch(e){scoreSubmitted=false;if(ui.scoreSubmitStatus)ui.scoreSubmitStatus.textContent="Não foi possível enviar. Confira sua conexão."}
+  }
   const rand=(a,b)=>a+Math.random()*(b-a);
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -60,7 +97,7 @@
   function hideOverlays(){ui.pause.classList.add("hidden");ui.over.classList.add("hidden")}
   function pause(){if(gameState!=="playing")return;gameState="paused";ui.pause.classList.remove("hidden");ui.arenaState.textContent="PARTIDA PAUSADA"}
   function resume(){if(gameState!=="paused")return;gameState="playing";ui.pause.classList.add("hidden");last=performance.now();requestAnimationFrame(loop);ui.arenaState.textContent="PROTOCOLO ATIVO"}
-  function endGame(){gameState="over";shake=12;burst(player.x,player.y,"#a9edff",35);playTone(125,.32);if(elapsed>best){best=elapsed;localStorage.setItem("discSnowmanBest",String(best))}ui.finalTime.textContent=fmt(elapsed);ui.finalBest.textContent=fmt(best);ui.over.classList.remove("hidden");ui.arenaState.textContent="SINAL PERDIDO"}
+  function endGame(){gameState="over";submitScore();shake=12;burst(player.x,player.y,"#a9edff",35);playTone(125,.32);if(elapsed>best){best=elapsed;localStorage.setItem("discSnowmanBest",String(best))}ui.finalTime.textContent=fmt(elapsed);ui.finalBest.textContent=fmt(best);ui.over.classList.remove("hidden");ui.arenaState.textContent="SINAL PERDIDO"}
   function phase(){return Math.min(6,Math.floor(elapsed/PHASE_LENGTH)+1)}
   function threat(){return clamp(Math.floor(elapsed/100)+1,1,5)}
   function spawnSaw(type,initial=false){
@@ -251,9 +288,17 @@
   function joyEnd(){joy.active=false;joy.x=0;joy.y=0;joy.pointer=null;ui.knob.style.transform="translate(0,0)"}
   ui.joystick.addEventListener("pointerup",joyEnd);ui.joystick.addEventListener("pointercancel",joyEnd);
   ui.dashBtn.addEventListener("pointerdown",e=>{e.preventDefault();dash()});
+  ui.usernameContinue.addEventListener("click",()=>{
+    const name=ui.usernameInput.value.trim();
+    if(!/^[\\p{L}\\p{N}_ -]{2,16}$/u.test(name)){ui.usernameError.textContent="Use de 2 a 16 caracteres (letras, números, espaço, _ ou -).";return}
+    currentUsername=name;localStorage.setItem("discSnowmanUsername",name);
+    ui.usernameScreen.classList.add("is-hidden");ui.landing.classList.remove("is-hidden");loadLeaderboard();
+  });
+  ui.usernameInput.addEventListener("keydown",e=>{if(e.key==="Enter")ui.usernameContinue.click()});
   ui.landingStart.addEventListener("click",start);ui.retryBtn.addEventListener("click",start);ui.restartPause.addEventListener("click",start);ui.resumeBtn.addEventListener("click",resume);
   ui.sound.addEventListener("click",()=>{soundOn=!soundOn;ui.sound.classList.toggle("sound-muted",!soundOn);ui.sound.setAttribute("aria-label",soundOn?"Desativar sons":"Ativar sons");if(soundOn)playTone(520,.06)});
   window.addEventListener("keydown",keydown,{passive:false});window.addEventListener("keyup",keyup);window.addEventListener("blur",()=>{keys={};joyEnd();if(gameState==="playing")pause()});
   window.addEventListener("resize",fit);document.addEventListener("visibilitychange",()=>{if(document.hidden&&gameState==="playing")pause()});
   fit();ui.finalBest.textContent=fmt(best);ui.bestTime.textContent=fmt(best);ui.landingBest.textContent=fmt(best);ui.sound.classList.toggle("sound-muted",!soundOn);render();
+  if(currentUsername){ui.usernameScreen.classList.add("is-hidden");loadLeaderboard()}else{ui.landing.classList.add("is-hidden");ui.usernameScreen.classList.remove("is-hidden");ui.usernameInput.focus()}
 })();
