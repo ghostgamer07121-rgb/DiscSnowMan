@@ -6,7 +6,7 @@
   const ui = {
     usernameScreen:$("username-screen"), usernameInput:$("username-input"), usernameContinue:$("username-continue"), usernameError:$("username-error"),
     landing:$("landing-screen"), landingStart:$("landing-start-button"), landingBest:$("landing-best"), gameScreen:$("game-screen"),
-    leaderboardBody:$("leaderboard-body"), leaderboardStatus:$("leaderboard-status"), scoreSubmitStatus:$("score-submit-status"),
+    leaderboardBody:$("leaderboard-body"), leaderboardStatus:$("leaderboard-status"), scoreSubmitStatus:$("score-submit-status"), profileName:$("profile-name"), editProfile:$("edit-profile-button"), usernameHint:$("username-hint"),
     pause:$("pause-overlay"), over:$("gameover-overlay"),
     resumeBtn:$("resume-button"), retryBtn:$("retry-button"),
     restartPause:$("restart-pause-button"), timer:$("timer"), progress:$("time-progress"),
@@ -285,17 +285,32 @@
   function joyEnd(){joy.active=false;joy.x=0;joy.y=0;joy.pointer=null;ui.knob.style.transform="translate(0,0)"}
   ui.joystick.addEventListener("pointerup",joyEnd);ui.joystick.addEventListener("pointercancel",joyEnd);
   ui.dashBtn.addEventListener("pointerdown",e=>{e.preventDefault();dash()});
-  ui.usernameContinue.addEventListener("click",()=>{
+  async function savePlayerProfile(){
     const name=ui.usernameInput.value.trim();
     if(!/^[A-Za-zÀ-ÿ0-9_ -]{2,16}$/.test(name)){ui.usernameError.textContent="Use de 2 a 16 caracteres (letras, números, espaço, _ ou -).";return}
-    currentUsername=name;localStorage.setItem("discSnowmanUsername",name);
-    ui.usernameScreen.classList.add("is-hidden");ui.landing.classList.remove("is-hidden");loadLeaderboard();
-  });
+    ui.usernameContinue.disabled=true;ui.usernameError.textContent="Salvando perfil...";
+    try{
+      const profile=await window.DSAuth.saveProfile(name);currentUsername=profile.username;localStorage.setItem("discSnowmanUsername",currentUsername);
+      ui.profileName.textContent=currentUsername;ui.usernameScreen.classList.add("is-hidden");ui.landing.classList.remove("is-hidden");
+      ui.usernameError.textContent="";loadLeaderboard();
+    }catch(error){ui.usernameError.textContent=error.message||"Não foi possível salvar o perfil."}
+    finally{ui.usernameContinue.disabled=false}
+  }
+  ui.usernameContinue.addEventListener("click",savePlayerProfile);
+  ui.editProfile.addEventListener("click",()=>{ui.usernameInput.value=currentUsername;ui.usernameError.textContent="";ui.usernameHint.textContent="Escolha um nome exclusivo para atualizar seu perfil.";ui.landing.classList.add("is-hidden");ui.usernameScreen.classList.remove("is-hidden");ui.usernameInput.focus()});
   ui.usernameInput.addEventListener("keydown",e=>{if(e.key==="Enter")ui.usernameContinue.click()});
   ui.landingStart.addEventListener("click",start);ui.retryBtn.addEventListener("click",start);ui.restartPause.addEventListener("click",start);ui.resumeBtn.addEventListener("click",resume);
   ui.sound.addEventListener("click",()=>{soundOn=!soundOn;ui.sound.classList.toggle("sound-muted",!soundOn);ui.sound.setAttribute("aria-label",soundOn?"Desativar sons":"Ativar sons");if(soundOn)playTone(520,.06)});
   window.addEventListener("keydown",keydown,{passive:false});window.addEventListener("keyup",keyup);window.addEventListener("blur",()=>{keys={};joyEnd();if(gameState==="playing")pause()});
   window.addEventListener("resize",fit);document.addEventListener("visibilitychange",()=>{if(document.hidden&&gameState==="playing")pause()});
   fit();ui.finalBest.textContent=fmt(best);ui.bestTime.textContent=fmt(best);ui.landingBest.textContent=fmt(best);ui.sound.classList.toggle("sound-muted",!soundOn);render();
-  if(currentUsername){ui.usernameScreen.classList.add("is-hidden");loadLeaderboard()}else{ui.landing.classList.add("is-hidden");ui.usernameScreen.classList.remove("is-hidden");ui.usernameInput.focus()}
+  ui.landing.classList.add("is-hidden");ui.usernameScreen.classList.remove("is-hidden");
+  async function initializePlayer(){
+    try{
+      await window.DSAuth.ensureSession();const profile=await window.DSAuth.loadProfile();
+      if(profile){currentUsername=profile.username;ui.usernameInput.value=currentUsername;ui.profileName.textContent=currentUsername;ui.usernameScreen.classList.add("is-hidden");ui.landing.classList.remove("is-hidden");loadLeaderboard()}
+      else{ui.usernameHint.textContent="Seu perfil ficará vinculado à sua conta neste navegador.";ui.usernameInput.focus()}
+    }catch(error){ui.usernameError.textContent=error.message||"Falha ao conectar. Atualize a página."}
+  }
+  if(window.DSAuth)initializePlayer();else window.addEventListener("ds-auth-ready",initializePlayer,{once:true});
 })();
