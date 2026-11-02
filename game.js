@@ -30,7 +30,7 @@
   let player,spawnClock=0,shake=0,frameCount=0,fpsClock=0,best=Number(localStorage.getItem("discSnowmanBest")||0);
   let joy={x:0,y:0,active:false,pointer:null},audioCtx=null;
   const LEADERBOARD_URL="https://pgxwxvimpwjqqhzojfps.supabase.co/functions/v1/leaderboard";
-  let currentUsername=localStorage.getItem("discSnowmanUsername")||"",scoreSubmitted=false;
+  let currentUsername=localStorage.getItem("discSnowmanUsername")||"",scoreSubmitted=false,activeSessionId=null;
   const fmtScore=ms=>fmt(ms/1000);
   function renderLeaderboard(scores){
     if(!ui.leaderboardBody)return;
@@ -53,16 +53,14 @@
     }catch(e){ui.leaderboardStatus.textContent="Ranking indisponível no momento."}
   }
   async function submitScore(){
-    if(scoreSubmitted||!currentUsername)return;
-    scoreSubmitted=true;
-    if(ui.scoreSubmitStatus)ui.scoreSubmitStatus.textContent="Enviando pontuação...";
+    if(scoreSubmitted||!activeSessionId)return;scoreSubmitted=true;
+    if(ui.scoreSubmitStatus)ui.scoreSubmitStatus.textContent="Validando partida e salvando recorde...";
     try{
-      const response=await fetch(LEADERBOARD_URL,{method:"POST",headers:{"Content-Type":"application/json","apikey":"sb_publishable_rLPMApQamOOGr32XNRfQEQ_Ap5qMViq"},body:JSON.stringify({username:currentUsername,score_ms:Math.round(elapsed*1000)})});
-      const data=await response.json();
-      if(!response.ok)throw new Error(data.error||"Falha ao enviar");
-      renderLeaderboard(data.scores);ui.leaderboardStatus.textContent="Atualizado ao vivo";
-      if(ui.scoreSubmitStatus)ui.scoreSubmitStatus.textContent="Pontuação registrada no ranking!";
-    }catch(e){scoreSubmitted=false;if(ui.scoreSubmitStatus)ui.scoreSubmitStatus.textContent="Não foi possível enviar. Confira sua conexão."}
+      const data=await window.DSAuth.finishRun(activeSessionId,Math.round(elapsed*1000));
+      renderLeaderboard(data.scores);ui.leaderboardStatus.textContent="Ranking atualizado";
+      if(ui.scoreSubmitStatus)ui.scoreSubmitStatus.textContent="Recorde validado e salvo!";
+    }catch(e){scoreSubmitted=false;if(ui.scoreSubmitStatus)ui.scoreSubmitStatus.textContent=e.message||"Não foi possível salvar a pontuação."}
+    finally{activeSessionId=null}
   }
   const rand=(a,b)=>a+Math.random()*(b-a);
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -83,17 +81,15 @@
     for(let i=0;i<3;i++)spawnSaw("bounce",true);
     updateHUD();ui.arenaState.textContent="PROTOCOLO ATIVO";
   }
-  function start(){
-    scoreSubmitted=false;
-    ui.landing.classList.add("is-hidden");
-    ui.gameScreen.classList.remove("is-hidden");
-    fit();
-    reset();
-    gameState="playing";
-    hideOverlays();
-    last=performance.now();
-    playTone(440,.07);
-    requestAnimationFrame(loop);
+  async function start(){
+    if(gameState==="starting")return;
+    gameState="starting";ui.landingStart.disabled=true;ui.retryBtn.disabled=true;
+    try{
+      const session=await window.DSAuth.startRun();activeSessionId=session.id;scoreSubmitted=false;
+      ui.landing.classList.add("is-hidden");ui.gameScreen.classList.remove("is-hidden");
+      fit();reset();gameState="playing";hideOverlays();last=performance.now();playTone(440,.07);requestAnimationFrame(loop);
+    }catch(error){gameState="menu";ui.leaderboardStatus.textContent=error.message;ui.landing.classList.remove("is-hidden");}
+    finally{ui.landingStart.disabled=false;ui.retryBtn.disabled=false}
   }
   function hideOverlays(){ui.pause.classList.add("hidden");ui.over.classList.add("hidden")}
   function pause(){if(gameState!=="playing")return;gameState="paused";ui.pause.classList.remove("hidden");ui.arenaState.textContent="PARTIDA PAUSADA"}
