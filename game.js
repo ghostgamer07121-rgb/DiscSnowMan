@@ -290,7 +290,7 @@
     if(!/^[A-Za-zÀ-ÿ0-9_ -]{2,16}$/.test(name)){ui.usernameError.textContent="Use de 2 a 16 caracteres (letras, números, espaço, _ ou -).";return}
     ui.usernameContinue.disabled=true;ui.usernameError.textContent="Salvando perfil...";
     try{
-      const profile=await window.DSAuth.saveProfile(name);currentUsername=profile.username;best=Math.max(best,(profile.personal_best_ms||0)/1000);ui.landingBest.textContent=fmt(best);ui.bestTime.textContent=fmt(best);localStorage.setItem("discSnowmanUsername",currentUsername);
+      const profile=await window.DSAuth.saveProfile(name);currentUsername=profile.username;best=(profile.personal_best_ms||0)/1000;ui.landingBest.textContent=fmt(best);ui.bestTime.textContent=fmt(best);localStorage.setItem("discSnowmanBest",String(best));localStorage.setItem("discSnowmanUsername",currentUsername);
       ui.profileName.textContent=currentUsername;ui.usernameScreen.classList.add("is-hidden");ui.landing.classList.remove("is-hidden");
       ui.usernameError.textContent="";loadLeaderboard();
     }catch(error){ui.usernameError.textContent=error.message||"Não foi possível salvar o perfil."}
@@ -308,7 +308,7 @@
   async function initializePlayer(){
     try{
       await window.DSAuth.ensureSession();const profile=await window.DSAuth.loadProfile();
-      if(profile){currentUsername=profile.username;ui.usernameInput.value=currentUsername;ui.profileName.textContent=currentUsername;best=Math.max(best,(profile.personal_best_ms||0)/1000);ui.landingBest.textContent=fmt(best);ui.bestTime.textContent=fmt(best);ui.finalBest.textContent=fmt(best);ui.usernameScreen.classList.add("is-hidden");ui.landing.classList.remove("is-hidden");loadLeaderboard()}
+      if(profile){currentUsername=profile.username;ui.usernameInput.value=currentUsername;ui.profileName.textContent=currentUsername;best=(profile.personal_best_ms||0)/1000;localStorage.setItem("discSnowmanBest",String(best));ui.landingBest.textContent=fmt(best);ui.bestTime.textContent=fmt(best);ui.finalBest.textContent=fmt(best);ui.usernameScreen.classList.add("is-hidden");ui.landing.classList.remove("is-hidden");loadLeaderboard()}
       else{ui.usernameHint.textContent="Seu perfil ficará vinculado à sua conta neste navegador.";ui.usernameInput.focus()}
     }catch(error){ui.usernameError.textContent=error.message||"Falha ao conectar. Atualize a página."}
   }
