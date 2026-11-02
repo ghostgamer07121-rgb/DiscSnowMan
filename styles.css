@@ -348,3 +348,12 @@ body{overflow-x:hidden}
   .leaderboard-panel{max-height:210px;padding:10px 12px}
   .leaderboard-table td{padding:6px 4px}
 }
+
+
+/* Persistent player profile controls */
+.username-hint{margin:-7px 0 0;color:#747d82;font:9px "DM Mono",monospace;text-align:center}
+.username-screen .landing-start-button:disabled,.landing-start-button:disabled{opacity:.55;cursor:wait}
+.profile-strip{display:flex;align-items:center;justify-content:space-between;gap:18px;width:min(100%,390px);padding:9px 12px;border:1px solid #282d30;border-radius:6px;background:#0c1012;color:#838c90;font:9px "DM Mono",monospace;letter-spacing:.8px}
+.profile-strip strong{display:inline-block;margin-left:5px;color:#f1d33b;font-size:11px;letter-spacing:0}
+.profile-strip button{border:0;background:transparent;color:#aeb8bc;font:9px "DM Mono",monospace;letter-spacing:.5px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.profile-strip button:hover{color:#ffdc28}
