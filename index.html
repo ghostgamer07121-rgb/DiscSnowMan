@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css?v=leaderboard-v1">
+  <script type="module" src="./auth.js"></script>
   <script src="./game.js" defer></script>
 </head>
 <body>
@@ -18,7 +19,8 @@
       <div class="landing-snowman" role="img" aria-label="Boneco de neve"><svg viewBox="0 0 260 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="130" cy="205" r="67" fill="#dff5ff"/><circle cx="130" cy="116" r="48" fill="#eafaff"/><path d="M91 85 L96 47 Q130 29 164 47 L169 85 Z" fill="#152536"/><path d="M91 72 Q130 63 169 72 L169 83 Q130 91 91 83Z" fill="#ffcc22"/><circle cx="115" cy="112" r="4.6" fill="#152536"/><circle cx="145" cy="112" r="4.6" fill="#152536"/><path d="M128 120 L151 127 L128 132Z" fill="#ff9d32"/><path d="M88 154 Q130 171 172 154 L176 172 Q130 190 84 172Z" fill="#ffca1c"/></svg></div>
       <label for="username-input">ESCOLHA SEU NOME</label>
       <input id="username-input" maxlength="16" minlength="2" autocomplete="nickname" placeholder="Seu nome no ranking">
-      <p class="username-error" id="username-error" aria-live="polite"></p>\n      <p class="username-hint" id="username-hint">Seu perfil ficará vinculado à sua conta neste navegador.</p>
+      <p class="username-error" id="username-error" aria-live="polite"></p>
+      <p class="username-hint" id="username-hint">Seu perfil ficará vinculado à sua conta neste navegador.</p>\n      <p class="username-hint" id="username-hint">Seu perfil ficará vinculado à sua conta neste navegador.</p>
       <button class="landing-start-button" id="username-continue">CONTINUAR</button>
     </section>
     <section class="landing-screen" id="landing-screen" aria-label="Tela inicial">
