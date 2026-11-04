@@ -5,7 +5,7 @@
   const $ = id => document.getElementById(id);
   const ui = {
     usernameScreen:$("username-screen"), usernameInput:$("username-input"), usernameContinue:$("username-continue"), usernameError:$("username-error"),
-    landing:$("landing-screen"), landingStart:$("landing-start-button"), landingBest:$("landing-best"), gameScreen:$("game-screen"),
+    landing:$("landing-screen"), landingStart:$("landing-start-button"), landingBest:$("landing-best"), gameScreen:$("game-screen"), homeBtn:$("home-button"),
     leaderboardBody:$("leaderboard-body"), leaderboardStatus:$("leaderboard-status"), scoreSubmitStatus:$("score-submit-status"), profileName:$("profile-name"), editProfile:$("edit-profile-button"), usernameHint:$("username-hint"),
     pause:$("pause-overlay"), over:$("gameover-overlay"),
     resumeBtn:$("resume-button"), retryBtn:$("retry-button"),
@@ -315,11 +315,36 @@
   fit();ui.finalBest.textContent=fmt(best);ui.bestTime.textContent=fmt(best);ui.landingBest.textContent=fmt(best);ui.sound.classList.toggle("sound-muted",!soundOn);render();
   ui.landing.classList.add("is-hidden");ui.usernameScreen.classList.remove("is-hidden");
   async function initializePlayer(){
+    const savedUsername=localStorage.getItem("discSnowmanUsername")||"";
     try{
-      await window.DSAuth.ensureSession();const profile=await window.DSAuth.loadProfile();
-      if(profile){currentUsername=profile.username;ui.usernameInput.value=currentUsername;ui.profileName.textContent=currentUsername;best=(profile.personal_best_ms||0)/1000;localStorage.setItem("discSnowmanBest",String(best));ui.landingBest.textContent=fmt(best);ui.bestTime.textContent=fmt(best);ui.finalBest.textContent=fmt(best);ui.usernameScreen.classList.add("is-hidden");ui.landing.classList.remove("is-hidden");loadLeaderboard()}
-      else{ui.usernameHint.textContent="Seu nome e recorde ficam registrados no ranking global.";ui.usernameInput.focus()}
-    }catch(error){ui.usernameError.textContent=error.message||"Falha ao conectar. Atualize a página."}
+      await window.DSAuth.ensureSession();
+      const profile=await window.DSAuth.loadProfile();
+      if(profile){
+        currentUsername=profile.username;ui.usernameInput.value=currentUsername;ui.profileName.textContent=currentUsername;
+        best=(profile.personal_best_ms||0)/1000;localStorage.setItem("discSnowmanBest",String(best));
+        localStorage.setItem("discSnowmanUsername",currentUsername);
+        ui.landingBest.textContent=fmt(best);ui.bestTime.textContent=fmt(best);ui.finalBest.textContent=fmt(best);
+        ui.usernameScreen.classList.add("is-hidden");ui.landing.classList.remove("is-hidden");loadLeaderboard();
+      }else if(savedUsername && /^[A-Za-zÀ-ÿ0-9_ -]{2,16}$/.test(savedUsername)){
+        currentUsername=savedUsername;ui.usernameInput.value=savedUsername;ui.profileName.textContent=savedUsername;
+        ui.usernameScreen.classList.add("is-hidden");ui.landing.classList.remove("is-hidden");loadLeaderboard();
+        window.DSAuth.saveProfile(savedUsername).then(p=>{
+          currentUsername=p.username;ui.profileName.textContent=currentUsername;
+          best=(p.personal_best_ms||0)/1000;localStorage.setItem("discSnowmanBest",String(best));
+          ui.landingBest.textContent=fmt(best);ui.bestTime.textContent=fmt(best);ui.finalBest.textContent=fmt(best);
+        }).catch(()=>{});
+      }else{
+        ui.usernameHint.textContent="Seu nome e recorde ficam registrados no ranking global.";ui.usernameInput.focus();
+      }
+    }catch(error){
+      if(savedUsername && /^[A-Za-zÀ-ÿ0-9_ -]{2,16}$/.test(savedUsername)){
+        currentUsername=savedUsername;ui.usernameInput.value=savedUsername;ui.profileName.textContent=savedUsername;
+        ui.usernameScreen.classList.add("is-hidden");ui.landing.classList.remove("is-hidden");
+        ui.leaderboardStatus.textContent="Perfil carregado neste dispositivo; ranking pode estar indisponível.";
+      }else{
+        ui.usernameError.textContent=error.message||"Falha ao conectar. Atualize a página.";
+      }
+    }
   }
   if(window.DSAuth)initializePlayer();else window.addEventListener("ds-auth-ready",initializePlayer,{once:true});
 })();
