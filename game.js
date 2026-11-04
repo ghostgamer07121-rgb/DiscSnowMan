@@ -93,6 +93,13 @@
     finally{ui.landingStart.disabled=false;ui.retryBtn.disabled=false}
   }
   function hideOverlays(){ui.pause.classList.add("hidden");ui.over.classList.add("hidden")}
+  function returnToHome(){
+    if(gameState==="starting")return;
+    if(gameState==="playing"||gameState==="paused"){activeSessionId=null;scoreSubmitted=true}
+    gameState="menu";keys={};joyEnd();hideOverlays();
+    ui.gameScreen.classList.add("is-hidden");ui.landing.classList.remove("is-hidden");
+    loadLeaderboard();
+  }
   function pause(){if(gameState!=="playing")return;gameState="paused";ui.pause.classList.remove("hidden");ui.arenaState.textContent="PARTIDA PAUSADA"}
   function resume(){if(gameState!=="paused")return;gameState="playing";ui.pause.classList.add("hidden");last=performance.now();requestAnimationFrame(loop);ui.arenaState.textContent="PROTOCOLO ATIVO"}
   function endGame(){gameState="over";submitScore();shake=12;burst(player.x,player.y,"#a9edff",35);playTone(125,.32);if(elapsed>best){best=elapsed;localStorage.setItem("discSnowmanBest",String(best))}ui.finalTime.textContent=fmt(elapsed);ui.finalBest.textContent=fmt(best);ui.over.classList.remove("hidden");ui.arenaState.textContent="SINAL PERDIDO"}
@@ -300,6 +307,7 @@
   ui.usernameContinue.addEventListener("click",savePlayerProfile);
   ui.editProfile.addEventListener("click",()=>{ui.usernameInput.value=currentUsername;ui.usernameError.textContent="";ui.usernameHint.textContent="Escolha um nome exclusivo para atualizar seu perfil.";ui.landing.classList.add("is-hidden");ui.usernameScreen.classList.remove("is-hidden");ui.usernameInput.focus()});
   ui.usernameInput.addEventListener("keydown",e=>{if(e.key==="Enter")ui.usernameContinue.click()});
+  ui.homeBtn.addEventListener("click",returnToHome);
   ui.landingStart.addEventListener("click",start);ui.retryBtn.addEventListener("click",start);ui.restartPause.addEventListener("click",start);ui.resumeBtn.addEventListener("click",resume);
   ui.sound.addEventListener("click",()=>{soundOn=!soundOn;ui.sound.classList.toggle("sound-muted",!soundOn);ui.sound.setAttribute("aria-label",soundOn?"Desativar sons":"Ativar sons");if(soundOn)playTone(520,.06)});
   window.addEventListener("keydown",keydown,{passive:false});window.addEventListener("keyup",keyup);window.addEventListener("blur",()=>{keys={};joyEnd();if(gameState==="playing")pause()});
