@@ -357,3 +357,11 @@ body{overflow-x:hidden}
 .profile-strip strong{display:inline-block;margin-left:5px;color:#f1d33b;font-size:11px;letter-spacing:0}
 .profile-strip button{border:0;background:transparent;color:#aeb8bc;font:9px "DM Mono",monospace;letter-spacing:.5px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .profile-strip button:hover{color:#ffdc28}
+
+
+/* Botão de retorno à tela inicial durante a partida */
+.game-screen .home-button{position:absolute;top:14px;left:18px;z-index:8;width:42px;height:42px;display:grid;place-items:center;padding:0;border:1px solid #555d61;border-radius:50%;background:#151a1d;color:#f5d83d;cursor:pointer;box-shadow:0 3px 14px #0008;transition:background .15s ease,transform .15s ease,border-color .15s ease}
+.game-screen .home-button:hover{background:#252d31;border-color:#f5d83d;transform:translateY(-1px)}
+.game-screen .home-button:focus-visible{outline:2px solid #ffdc28;outline-offset:3px}
+.game-screen .home-button svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:680px){.game-screen .home-button{top:10px;left:12px;width:36px;height:36px}.game-screen .home-button svg{width:18px;height:18px}}
