@@ -58,9 +58,10 @@
     try{
       const data=await window.DSAuth.finishRun(activeSessionId,Math.round(elapsed*1000));
       renderLeaderboard(data.scores);ui.leaderboardStatus.textContent="Ranking atualizado";
-      if(ui.scoreSubmitStatus)ui.scoreSubmitStatus.textContent="Recorde validado e salvo!";
+      if(Number.isFinite(data.personal_best_ms)){best=data.personal_best_ms/1000;localStorage.setItem("discSnowmanBest",String(best));ui.landingBest.textContent=fmt(best);ui.bestTime.textContent=fmt(best);ui.finalBest.textContent=fmt(best)}
+      if(ui.scoreSubmitStatus)ui.scoreSubmitStatus.textContent="Recorde validado e salvo no ranking global!";
     }catch(e){scoreSubmitted=false;if(ui.scoreSubmitStatus)ui.scoreSubmitStatus.textContent=e.message||"Não foi possível salvar a pontuação."}
-    finally{activeSessionId=null}
+    finally{if(scoreSubmitted)activeSessionId=null}
   }
   const rand=(a,b)=>a+Math.random()*(b-a);
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
