@@ -9,9 +9,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./styles.css?v=global-ranking-v3">
+  <link rel="stylesheet" href="./styles.css?v=home-button-v1">
   <script type="module" src="./auth.js?v=global-ranking-v3"></script>
-  <script src="./game.js?v=global-ranking-v3" defer></script>
+  <script src="./game.js?v=home-button-v1" defer></script>
 </head>
 <body>
   <main class="app-shell">
@@ -31,6 +31,7 @@
       <section class="leaderboard-panel" aria-label="Ranking global"><div class="leaderboard-heading"><span>RANKING GLOBAL</span><small>TOP 10</small></div><div class="leaderboard-status" id="leaderboard-status">Conectando...</div><table class="leaderboard-table"><thead><tr><th>#</th><th>JOGADOR</th><th>TEMPO</th></tr></thead><tbody id="leaderboard-body"><tr><td colspan="3">Carregando...</td></tr></tbody></table></section>
     </section>
     <section class="game-screen is-hidden" id="game-screen" aria-label="Arena">
+      <button class="home-button" id="home-button" type="button" aria-label="Voltar ao início" title="Voltar ao início"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></button>
       <header class="minimal-hud">
         <div class="minimal-time" id="timer">00:00<span class="timer-ms">.00</span></div>
         <div class="minimal-meta"><span id="phase-label">FASE 01 / 06</span><span>RECORDE <b id="best-time">00:00</b></span></div>
