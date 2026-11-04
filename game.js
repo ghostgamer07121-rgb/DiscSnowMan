@@ -46,7 +46,7 @@
   }
   async function loadLeaderboard(){
     try{
-      const response=await fetch(LEADERBOARD_URL,{headers:{"apikey":"sb_publishable_rLPMApQamOOGr32XNRfQEQ_Ap5qMViq"}});
+      const response=await fetch(LEADERBOARD_URL,{headers:{"apikey":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBneHd4dmltcHdqcXFoem9qZnBzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzNzA1ODMsImV4cCI6MjEwODk0NjU4M30.xQKhSd_DqhZuD67PEC3c79FZOx8kOa2pC18wFumSn0g","Authorization":"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBneHd4dmltcHdqcXFoem9qZnBzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTMzNzA1ODMsImV4cCI6MjEwODk0NjU4M30.xQKhSd_DqhZuD67PEC3c79FZOx8kOa2pC18wFumSn0g"}});
       if(!response.ok)throw new Error("request failed");
       const data=await response.json();renderLeaderboard(data.scores);
       ui.leaderboardStatus.textContent="Atualizado ao vivo";
