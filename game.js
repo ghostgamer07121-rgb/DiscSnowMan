@@ -310,7 +310,7 @@
     try{
       await window.DSAuth.ensureSession();const profile=await window.DSAuth.loadProfile();
       if(profile){currentUsername=profile.username;ui.usernameInput.value=currentUsername;ui.profileName.textContent=currentUsername;best=(profile.personal_best_ms||0)/1000;localStorage.setItem("discSnowmanBest",String(best));ui.landingBest.textContent=fmt(best);ui.bestTime.textContent=fmt(best);ui.finalBest.textContent=fmt(best);ui.usernameScreen.classList.add("is-hidden");ui.landing.classList.remove("is-hidden");loadLeaderboard()}
-      else{ui.usernameHint.textContent="Seu perfil e recorde ficam salvos neste navegador.";ui.usernameInput.focus()}
+      else{ui.usernameHint.textContent="Seu nome e recorde ficam registrados no ranking global.";ui.usernameInput.focus()}
     }catch(error){ui.usernameError.textContent=error.message||"Falha ao conectar. Atualize a página."}
   }
   if(window.DSAuth)initializePlayer();else window.addEventListener("ds-auth-ready",initializePlayer,{once:true});
